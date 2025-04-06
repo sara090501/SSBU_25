@@ -27,7 +27,7 @@ Implementujte ďalšiu (ľubovoľnú) metriku pre evaluáciu modelov. Nezabudnit
 
 **Uveďte akú metriku ste doplnili:**
 
-#TODO - Metrika
+F1 skore
 
 ### Úloha 3 (1b)
 

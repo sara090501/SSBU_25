@@ -72,6 +72,9 @@ def plot_results(experiment, results, logger):
     plotter.plot_evaluation_metric_over_replications(
         experiment.results.groupby('model')['accuracy'].apply(list).to_dict(),
         'Accuracy per Replication and Average Accuracy', 'Accuracy')
+    plotter.plot_evaluation_metric_over_replications(
+        experiment.results.groupby('model')['f1_score'].apply(list).to_dict(),
+        'F1 Score per Replication and Average F1 Score', 'F1 Score')
     plotter.plot_confusion_matrices(experiment.mean_conf_matrices)
     plotter.print_best_parameters(results)
     logger.info("Plots generated successfully.")

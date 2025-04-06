@@ -44,7 +44,7 @@ class ExperimentPlotter(BasePlotter):
                 plt.plot(values, label=f"{model_name} per replication", alpha=0.5, color=colors[i % len(colors)])
                 avg_accuracy = sum(values) / len(values)
                 plt.axhline(y=avg_accuracy, linestyle='--', color=colors[i % len(colors)], 
-                            label=f"{model_name} average accuracy: {avg_accuracy:.2f}")
+                            label=f"{model_name} average {metric_name.lower()}: {avg_accuracy:.2f}")
             plt.legend()
 
         self._BasePlotter__generic_plot(
