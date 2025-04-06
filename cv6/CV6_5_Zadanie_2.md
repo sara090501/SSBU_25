@@ -14,7 +14,12 @@ Pridajte do kódu ďalší model strojového učenia (ľubovoľný), a taktiež 
 
 **Uveďte aký ML model a hodnoty jeho parametrov ste použili:**
 
-#TODO - Popis
+Vyuzila som nahodny les (random forest) s parametrami:
+            n_estimators: [50, 100, 200],
+            max_depth: [None, 5, 10],
+            min_samples_split: [2, 5],
+            min_samples_leaf: [1, 2],
+            bootstrap: [True, False].
 
 ### Úloha 2 (2b)
 
