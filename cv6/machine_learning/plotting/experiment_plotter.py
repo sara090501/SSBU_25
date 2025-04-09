@@ -1,18 +1,22 @@
 import seaborn as sns
 from matplotlib import pyplot as plt
 from plotting.base_plotter import BasePlotter
+import os
 
 
 class ExperimentPlotter(BasePlotter):
     """A class for plotting the results of machine learning experiments."""
 
+    def __init__(self):
+        # Zabezpečíme, že adresár 'machine_learning' existuje pre ukladanie grafov.
+        os.makedirs("machine_learning", exist_ok=True)
+
     def plot_metric_density(self, results, metrics=('accuracy', 'f1_score', 'roc_auc')):
         """
-        Plot density plots for specified metrics.
+        Vykreslí hustotu rozdelenia (density plot) pre zadané metriky pre každý model.
 
-        Parameters:
-        - results: DataFrame containing the results.
-        - metrics: List of metrics to plot.
+        Grafy budú uložené do adresára machine_learning pod názvami:
+        density_accuracy.png, density_f1_score.png, density_roc_auc.png.
         """
         for metric in metrics:
             self._BasePlotter__generic_plot(
@@ -26,25 +30,25 @@ class ExperimentPlotter(BasePlotter):
                 title=f'Density Plot of {metric.capitalize()}',
                 xlabel=metric.capitalize(),
                 ylabel='Density',
-                figsize=(10, 6)
+                figsize=(10, 6),
+                save_path=f"machine_learning/density_{metric}.png"
             )
 
     def plot_evaluation_metric_over_replications(self, all_metric_results, title, metric_name):
         """
-        Plot accuracies for each model over all replications and display the average accuracy.
+        Vykreslí priebeh zvolenej metriky (napr. Accuracy alebo F1 score) počas replikácií pre jednotlivé modely.
 
-        Parameters:
-        - all_metric_results: Dict containing accuracies for each model.
-        - title: str, title of the plot.
-        - metric_name: str, name of the metric to display on the y-axis.
+        Graf sa uloží do súboru v adresári machine_learning s názvom:
+        <metric_name_lowercase>_over_replications.png
         """
+
         def plot_func():
             colors = ['green', 'orange', 'blue']
             for i, (model_name, values) in enumerate(all_metric_results.items()):
                 plt.plot(values, label=f"{model_name} per replication", alpha=0.5, color=colors[i % len(colors)])
-                avg_accuracy = sum(values) / len(values)
-                plt.axhline(y=avg_accuracy, linestyle='--', color=colors[i % len(colors)], 
-                            label=f"{model_name} average {metric_name.lower()}: {avg_accuracy:.2f}")
+                avg = sum(values) / len(values)
+                plt.axhline(y=avg, linestyle='--', color=colors[i % len(colors)],
+                            label=f"{model_name} average {metric_name.lower()}: {avg:.2f}")
             plt.legend()
 
         self._BasePlotter__generic_plot(
@@ -52,15 +56,15 @@ class ExperimentPlotter(BasePlotter):
             title=title,
             xlabel='Replication',
             ylabel=metric_name,
-            figsize=(10, 5)
+            figsize=(10, 5),
+            save_path=f"machine_learning/{metric_name.lower()}_over_replications.png"
         )
 
     def plot_confusion_matrices(self, confusion_matrices):
         """
-        Plot the average confusion matrix for each model.
-
-        Parameters:
-        - confusion_matrices: Dict containing the average confusion matrix for each model.
+        Vykreslí a uloží priemernú confusion matrix pre každý model.
+        Súbory budú uložené do adresára machine_learning s názvom:
+        conf_matrix_<model_nazov>.png
         """
         for model_name, matrix in confusion_matrices.items():
             self._BasePlotter__generic_plot(
@@ -73,15 +77,15 @@ class ExperimentPlotter(BasePlotter):
                 title=f'Average Confusion Matrix: {model_name}',
                 xlabel='Predicted label',
                 ylabel='True label',
-                figsize=(6, 5)
+                figsize=(6, 5),
+                save_path=f"machine_learning/conf_matrix_{model_name.replace(' ', '_')}.png"
             )
 
     def print_best_parameters(self, results):
         """
-        Print the most frequently chosen best parameters for each model.
+        Vypíše najčastejšie zvolené optimálne parametre pre každý model.
 
-        Parameters:
-        - results: DataFrame containing the results.
+        Výpis prebehne do konzoly.
         """
         for model_name in results['model'].unique():
             model_results = results[results['model'] == model_name]

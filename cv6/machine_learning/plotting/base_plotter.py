@@ -5,7 +5,8 @@ from typing import Callable
 class BasePlotter:
     """Abstract base class for common plotting functionality."""
 
-    def __generic_plot(self, plot_func: Callable, *args, **kwargs):
+    def __generic_plot(self, plot_func, *args, title="", xlabel="", ylabel="", figsize=(8, 6), save_path=None,
+                       **kwargs):
         """
         A generic plotting function to reduce redundancy in plotting methods.
 
@@ -14,12 +15,17 @@ class BasePlotter:
         - args: Positional arguments for the plotting function.
         - kwargs: Keyword arguments for the plotting function.
         """
-        general_kwargs = {key: kwargs.pop(key, None) for key in ['title', 'xlabel', 'ylabel', 'xticks_rotation', 'yticks', 'yticklabels', 'xticks']}
-        plt.figure(figsize=kwargs.pop('figsize', (10, 6)))
+        plt.figure(figsize=figsize)
         plot_func(*args, **kwargs)
-        self.__apply_plot_labels(general_kwargs)
-        plt.tight_layout()
+        plt.title(title)
+        plt.xlabel(xlabel)
+        plt.ylabel(ylabel)
+        plt.grid(True)
+        if save_path:
+            plt.tight_layout()
+            plt.savefig(save_path)
         plt.show()
+        plt.close()
 
     def __apply_plot_labels(self, general_kwargs):
         """
