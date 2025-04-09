@@ -37,7 +37,23 @@ Do implementácie pridajte ukladanie všetkých grafov, ktoré sa vytvárajú pr
 
 **V skripte `main.py`** nastavte počet replikácií na vyššie číslo (rozumne, podľa vlastného uváženia). Vykonajte beh aplikácie s Vašou implementáciou. Po skončení behu zanalyzujte vygenerované grafy a pár vetami popíšte ich interpretáciu. (Napr. v čom je ktorý ML model lepší, a pod.)
 
-#TODO - Interpretácia
+Počet replikácií:
+
+Počet replikácií bol nastavený na 20, čo umožňuje získať robustnejší a štatisticky spoľahlivejší odhad výkonnosti modelov. Vyšší počet replikácií minimalizuje vplyv náhodných odchýlok pri delení dát a zároveň potvrdzuje stabilitu metrík.
+
+Interpretácia výsledkov:
+
+Grafy hustoty metrik (accuracy, f1_score, roc_auc):
+
+Z grafov hustoty vyplýva, že hodnoty metrik pre jednotlivé modely sú zoskupené okolo stredných hodnôt. Napríklad, ak Random Forest vykazuje užšie a posunuté rozdelenie smerom k vyšším hodnotám accuracy a F1 skóre, znamená to, že tento model má konzistentnejší a lepší výkon v porovnaní s Logistic Regression.
+
+Grafy priebehu metrik počas replikácií:
+
+Čiarové grafy, ktoré zobrazujú vývoj metrik počas 50 replikácií, demonštrujú stabilitu modelov. Ak sa pre Random Forest krivka hodnôt stabilizuje rýchlejšie a vykazuje menšiu variabilitu oproti Logistic Regression, naznačuje to, že Random Forest poskytuje robustnejšie a spoľahlivejšie výsledky v rôznych rozdeleniach dát.
+
+Priemerné matice zámien:
+
+Agregované confusion matrices pre jednotlivé modely poskytujú prehľad o klasifikačných chybách. Ak Random Forest vykazuje menej chybne klasifikovaných prípadov (nižší počet FP a FN) v porovnaní s Logistic Regression, potvrdzuje to jeho lepšiu schopnosť správne rozpoznávať jednotlivé triedy (napr. benigné vs. maligné prípady).
 
 **Odovzdávanie riešenia:** Ako súčasť riešenia zahrňte okrem odpovedí na otázky aj skripty s Vašou implementáciou, vygenerované logy a grafy (všetko môžete dať na Github).
 

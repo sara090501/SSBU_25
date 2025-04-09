@@ -1,6 +1,6 @@
 import warnings
 
-# Suppress specific FutureWarnings from scikit-learn
+# Potlačenie niektorých FutureWarning správ zo scikit-learn
 warnings.filterwarnings("ignore", category=FutureWarning)
 
 from sklearn.linear_model import LogisticRegression
@@ -13,11 +13,11 @@ from utils.logger import Logger
 
 def initialize_models_and_params():
     """
-    Initializes models and their hyperparameter grids.
+    Inicializácia modelov a hyperparameter gridov.
 
-    Returns:
-    - models: dict, dictionary of model instances.
-    - param_grids: dict, dictionary of hyperparameter grids.
+    Vrátené hodnoty:
+    - models: dictionary inštancií modelov.
+    - param_grids: dictionary s hyperparameter gridmi pre jednotlivé modely.
     """
     models = {
         "Logistic Regression": LogisticRegression(solver='liblinear'),
@@ -38,35 +38,39 @@ def initialize_models_and_params():
 
 def run_experiment(dataset, models, param_grids, logger):
     """
-    Runs the experiment with the given dataset, models, and hyperparameter grids.
+    Spustenie experimentu s daným datasetom, modelmi a hyperparameter gridmi.
 
-    Parameters:
-    - dataset: Dataset instance, the dataset to use.
-    - models: dict, dictionary of model instances.
-    - param_grids: dict, dictionary of hyperparameter grids.
-    - logger: Logger instance, for logging messages.
+    Pridali sme parameter 'replications', ktorý nastavujeme na 50 –
+    čo znamená, že počas behu experimentu sa vykoná 50 replikácií.
 
-    Returns:
-    - experiment: Experiment instance, the experiment object.
-    - results: DataFrame, the results of the experiment.
+    Argumenty:
+    - dataset: inštancia Dataset, ktorá obsahuje dáta a target.
+    - models: dictionary inštancií modelov.
+    - param_grids: dictionary hyperparameter gridov.
+    - logger: inštancia Logger na zaznamenávanie hlásení.
+
+    Vrátené hodnoty:
+    - experiment: objekt experimentu.
+    - results: DataFrame s výsledkami experimentu.
     """
-    logger.info("Starting the experiment...")
-    experiment = Experiment(models, param_grids, logger=logger)
+    logger.info("Spúšťam experiment...")
+    replications = 20  # Zvýšený počet replikácií pre robustnejšiu evaluáciu
+    experiment = Experiment(models, param_grids, logger=logger, replications=replications)
     results = experiment.run(dataset.data, dataset.target)
-    logger.info("Experiment completed successfully.")
+    logger.info("Experiment prebehol úspešne.")
     return experiment, results
 
 
 def plot_results(experiment, results, logger):
     """
-    Plots the results of the experiment.
+    Vykreslenie výsledkov experimentu.
 
-    Parameters:
-    - experiment: Experiment instance, the experiment object.
-    - results: DataFrame, the results of the experiment.
-    - logger: Logger instance, for logging messages.
+    Argumenty:
+    - experiment: inštancia experimentu.
+    - results: DataFrame s výsledkami experimentu.
+    - logger: inštancia Logger na zaznamenávanie hlásení.
     """
-    logger.info("Generating plots for the experiment results...")
+    logger.info("Generujem grafy výsledkov experimentu...")
     plotter = ExperimentPlotter()
     plotter.plot_metric_density(results)
     plotter.plot_evaluation_metric_over_replications(
@@ -77,25 +81,40 @@ def plot_results(experiment, results, logger):
         'F1 Score per Replication and Average F1 Score', 'F1 Score')
     plotter.plot_confusion_matrices(experiment.mean_conf_matrices)
     plotter.print_best_parameters(results)
-    logger.info("Plots generated successfully.")
+    logger.info("Grafy boli úspešne vygenerované a uložené.")
 
 
 def main():
     """
-    Main function to execute the model training and evaluation pipeline.
+    Hlavná funkcia spúšťajúca tréning a evaluáciu modelov.
 
-    Initializes the dataset, defines models and their parameter grids,
-    and invokes the replication of model training and evaluation.
+    Funkcia inicializuje dataset, definuje modely a hyperparametre,
+    nastavuje vyšší počet replikácií a spúšťa experiment.
+    Po behu aplikácie si preštudujte vygenerované grafy.
+
+    Po analýze grafov (napr. hustota Accuracy, evolúcia metrik a confusion matrix)
+    môžeme pozorovať, že:
+
+    - **Density Plots (hustota metrik)**: U grafov hustoty môžete zistiť, ako sú hodnoty Accuracy, F1 Score a ROC AUC rozdelené pre jednotlivé modely.
+      Napríklad, ak má Random Forest hustotu s menším rozptýlením a vyššími hodnotami, naznačuje to, že model je konzistentnejší.
+
+    - **Evolúcia metrik počas replikácií**: Grafy evolúcie metrik počas 50 replikácií ukážu, ako sa jednotlivé metriky (napr. Accuracy a F1 Score) menia naprieč behmi.
+      Ak sa pre Random Forest hodnoty konvergujú rýchlejšie a s menšou variabilitou, môže to znamenať stabilnejší výkon.
+
+    - **Confusion Matrices (maticie zámien)**: Z grafov s confusion matrix získate prehľad, koľko prípadov bolo nesprávne klasifikovaných (False Positives / False Negatives) pre jednotlivé modely.
+      Ak Random Forest vykazuje menej chýb, je považovaný za výhodnejší najmä v citlivých aplikáciách, ako je diagnostika rakoviny.
+
+    Tieto vizualizácie vám pomôžu lepšie porovnať a zhodnotiť výkonnosť jednotlivých modelov.
     """
     logger = Logger(log_file="outputs/application.log")
-    logger.info("Application started.")
+    logger.info("Aplikácia spustená.")
 
     dataset = DatasetRefactored()
     models, param_grids = initialize_models_and_params()
     experiment, results = run_experiment(dataset, models, param_grids, logger)
     plot_results(experiment, results, logger)
 
-    logger.info("Application finished successfully.")
+    logger.info("Aplikácia skončila úspešne.")
 
 
 if __name__ == "__main__":

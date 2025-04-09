@@ -5,27 +5,27 @@ from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import StratifiedKFold, train_test_split
 import os
 
-
 from data.data_handling_refactored import DatasetRefactored
 from models.model_optimizer import ModelOptimizer
 from models.model_trainer import ModelTrainer
 
+
 class Experiment:
     """A class to handle the entire experiment of training and evaluating models."""
 
-    def __init__(self, models, models_params, n_replications=10, logger=None):
+    def __init__(self, models, models_params, replications=10, logger=None):
         """
         Initialize the Experiment with models, their parameters, and number of replications.
 
         Parameters:
         - models: dict, a dictionary of machine learning model instances.
         - models_params: dict, a dictionary of hyperparameters for the models.
-        - n_replications: int, the number of training/evaluation cycles to perform.
+        - replications: int, the number of training/evaluation cycles to perform.
         - logger: Logger instance, for logging messages.
         """
         self.models = models
         self.models_params = models_params
-        self.n_replications = n_replications
+        self.n_replications = replications
         self.results = pd.DataFrame()
         self.datascaler = DatasetRefactored()
         self.accuracies_file = "outputs/model_accuracies.csv"
@@ -55,7 +55,7 @@ class Experiment:
         else:
             print(f"Starting replication {replication + 1}/{self.n_replications}.")
         X_resampled, y_resampled = self.__balance_dataset(X, y)
-        
+
         for model_name in self.models_params.keys():
             self.__train_and_evaluate_model(model_name, X_resampled, y_resampled, replication)
 
@@ -71,16 +71,16 @@ class Experiment:
 
         best_params = optimizer.grid_search(X_resampled, y_resampled, cv=skf)
 
-        # train the model with the best parameters
+        # Train the model with the best parameters
         trainer = ModelTrainer(self.models[model_name], best_params)
 
-        # split the resampled data into training and test sets
+        # Split the resampled data into training and test sets
         X_train, X_test, y_train, y_test = train_test_split(X_resampled, y_resampled, test_size=0.4)
 
-        # scale the data using the DataScaler class
+        # Scale the data using the DataScaler class
         X_train, X_test = self.datascaler.scale_data(X_train, X_test, scale_type='normalize')
 
-        # train and evaluate the model
+        # Train and evaluate the model
         trainer.train(X_train, y_train)
         accuracy, f1, roc_auc, predictions = trainer.evaluate(X_test, y_test)
 
@@ -99,11 +99,11 @@ class Experiment:
         })
         self.results = pd.concat([self.results, new_row], ignore_index=True)
 
-        # append the results to the CSV file
+        # Append the results to the CSV file
         with open(self.accuracies_file, 'a') as file:
             file.write(f"{model_name},{replication + 1},{accuracy:.4f},{f1:.4f},{roc_auc:.4f},\"{best_params}\"\n")
 
     def __calculate_mean_conf_matrices(self):
-        """Calculate the mean confusion matrisx for each model."""
+        """Calculate the mean confusion matrix for each model."""
         return {model_name: np.mean(np.array(matrices), axis=0)
                 for model_name, matrices in self.replication_conf_matrices.items()}
