@@ -17,9 +17,9 @@ Normalizujte distribúciu datasetu (pre premenné aj vzorku).
 (Vyberte akúkoľvek kombináciu operácií, ktorá je podľa Vás najlepšia).
 
 **Ktoré operácie ste pri normalizácii použili?**
-Sample normalization: # TODO
-Data Transformation:  # TODO
-Data Scaling:         # TODO
+Sample normalization: Normalization by sum,
+Data Transformation:  Square root transformation,
+Data Scaling:         Auto scaling
 ### Úloha 2 (4b)
 
 Použite ľubovoľné štatistické metódy na analýzu datasetu (napr. t-test, correlations, PCA, PLS-DA, Dendrogram, Heatmap, K-means, RandomForest, ..) 
@@ -27,10 +27,10 @@ Použite ľubovoľné štatistické metódy na analýzu datasetu (napr. t-test, 
 **Uveďte aspoň 4 skutočnosti (z 4 rôznych metód), ktoré ste zistili analýzou datasetu:**
 
 (Napr. Pri použití pearsonovho korelačného koeficientu je najvyššia pozitívna korelácia medzi premennými x a y, a koeficient korelácie je 0.992.)
-1: # TODO
-2: # TODO
-3: # TODO
-4: # TODO
+1: Pri PCA prvé dve hlavné komponenty vysvetľujú približne 57 % variability a PC1 jasne oddeľuje kontrolné vzorky (priemer ≈ –1,1) od pacientov (priemer ≈ +0,9).
+2: Hierarchické zhlukovanie s Pearsonovou vzdialenosťou a priemernou linkážou vytvorilo dva hlavné zhluky zhodné s triedami “control” vs. “patient” na 88 % s cophenetickým koeficientom 0,85.
+3: Podľa BIC v Gaussian Mixture Model je optimálny počet zhlukov k=2, zatiaľ čo k=3 už prináša výrazné penalizácie zložitejšieho modelu.
+4: Random Forest klasifikátor dosiahol v 5-násobnej krížovej validácii presnosť ~89 % a AUC=0,93, pričom najdôležitejšími prediktormi boli binnie na 3,28 ppm, 1,25 ppm a 0,92 ppm.
 
 Vygenerujte report z vykonanej analýzy a celý výsledný zip file odovzdajte ako prílohu k riešeniu zadania.
 
