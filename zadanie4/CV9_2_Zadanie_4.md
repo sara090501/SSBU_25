@@ -27,10 +27,10 @@ Použite ľubovoľné štatistické metódy na analýzu datasetu (napr. t-test, 
 **Uveďte aspoň 4 skutočnosti (z 4 rôznych metód), ktoré ste zistili analýzou datasetu:**
 
 (Napr. Pri použití pearsonovho korelačného koeficientu je najvyššia pozitívna korelácia medzi premennými x a y, a koeficient korelácie je 0.992.)
-1: Pri PCA prvé dve hlavné komponenty vysvetľujú približne 57 % variability a PC1 jasne oddeľuje kontrolné vzorky (priemer ≈ –1,1) od pacientov (priemer ≈ +0,9).
-2: Hierarchické zhlukovanie s Pearsonovou vzdialenosťou a priemernou linkážou vytvorilo dva hlavné zhluky zhodné s triedami “control” vs. “patient” na 88 % s cophenetickým koeficientom 0,85.
-3: Podľa BIC v Gaussian Mixture Model je optimálny počet zhlukov k=2, zatiaľ čo k=3 už prináša výrazné penalizácie zložitejšieho modelu.
-4: Random Forest klasifikátor dosiahol v 5-násobnej krížovej validácii presnosť ~89 % a AUC=0,93, pričom najdôležitejšími prediktormi boli binnie na 3,28 ppm, 1,25 ppm a 0,92 ppm.
+1: K-means (k = 3) na PCA binned 1H NMR spektier močových vzoriek vytvoril jeden zhluk prevažne obsahujúci kontrolné vzorky, druhý prevažne vzorky pacientov so závažným poškodením obličiek a tretí menší zmiešaný zhluk.
+2: PCA score plot ukazuje, že kontrolné vzorky sa prevažne zoskupujú na ľavej strane osi PC 1 (28,5 %), zatiaľ čo vzorky pacientov so závažným ochorením obličiek sa posúvajú na pravú stranu, hoci medzi nimi existuje mierne prekrytie.
+3: Random Forest s 500 stromami a 7 prediktormi dosiahol celkovú OOB chybu 8 %, kde boli všetky kontrolné vzorky (25) správne klasifikované (class.error 0) a zo 25 vzoriek pacientov bolo nesprávne zaradených 4 (class.error 0,16).
+4: Z 200 binned 1H NMR signálov je podľa nepárových t-testov s korekciou FDR<0,05 120 výrazne odlišných medzi kontrolnou skupinou a pacientmi so závažným ochorením obličiek, pričom niektoré dosahujú –log10(p) až cez 10.
 
 Vygenerujte report z vykonanej analýzy a celý výsledný zip file odovzdajte ako prílohu k riešeniu zadania.
 
